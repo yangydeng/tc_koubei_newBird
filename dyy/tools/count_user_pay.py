@@ -9,14 +9,14 @@ Created on Sun Jan 22 21:44:33 2017
 import MySQLdb
 #import pandas as pd
 from pandas import DataFrame
-from datetime import *
+from datetime import timedelta,datetime
 
 db = MySQLdb.connect(host="localhost",user='root',passwd="Dyy2008723",db="tc_koubei",charset="utf8")
 
 cursor = db.cursor()  
 
-start_day = datetime(2016,9,1)  #查询开始时间
-end_day = datetime(2016,9,30)   #查询结束时间
+start_day = datetime(2016,7,1)  #查询开始时间
+end_day = datetime(2016,10,31)   #查询结束时间
 save_dir = 'H://tc_koubei_newBird//dyy//csv//'  #结果保存路径
 
 while(start_day<=end_day):

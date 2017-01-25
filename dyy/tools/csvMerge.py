@@ -9,7 +9,7 @@ import pandas as pd
 from pandas import DataFrame
 import os
 
-os.chdir('../csv')
+os.chdir('../count_user_pay')
 files = os.listdir('./')    #这里改变工作路径
 dfs = DataFrame(columns=['shop_id'])
 dfs.shop_id = [i for i in range(1,2001)]
