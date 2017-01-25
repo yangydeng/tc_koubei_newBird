@@ -1,0 +1,1 @@
+每个csv保存了每月中，每个商家的客流量情况。columns的格式为 count_user_pay_yyyy_mm_dd
