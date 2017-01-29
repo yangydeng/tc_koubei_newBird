@@ -1,3 +1,13 @@
 ﻿1.count_user_pay.py 利用MySQLdb模块查询每个商铺每日的客流量，通过修改文件内部参数可以实现自定义查询，查询结果以csv的格式保存。
 2.csvMerge.py 将count_user_pay.py 产生的单个文件合并为为一个文件。
 3.create_table_count_user_pay.py 用于产生对应的表，由于列太多，因此不便用手动输入。
+4.tools.py
+	gb2312：将一列数组的格式转变为gb2312
+
+	transform_data：将data转变为数组
+
+	np_transform_data：将data转变为np.array
+	
+	calculate_score：计算得分
+
+	open_ratio：得到每日有客流的店铺占2000家店的比率，可改变输入参数得到更加精确的显示。 	

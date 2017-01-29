@@ -7,7 +7,6 @@ Created on Sun Jan 22 21:44:33 2017
 '''重启电脑记得打开 MySQL服务'''
 
 import MySQLdb
-#import pandas as pd
 from pandas import DataFrame
 from datetime import timedelta,datetime
 
