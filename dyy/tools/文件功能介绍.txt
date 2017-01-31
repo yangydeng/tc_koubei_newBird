@@ -1,13 +1,38 @@
 ﻿1.count_user_pay.py 利用MySQLdb模块查询每个商铺每日的客流量，通过修改文件内部参数可以实现自定义查询，查询结果以csv的格式保存。
+
 2.csvMerge.py 将count_user_pay.py 产生的单个文件合并为为一个文件。
+
 3.create_table_count_user_pay.py 用于产生对应的表，由于列太多，因此不便用手动输入。
+
 4.tools.py
-	gb2312：将一列数组的格式转变为gb2312
+		（1）shutdown：自动关机函数（包含取消关机功能）。
 
-	transform_data：将data转变为数组
+		（2）gb2312：解决dataframe保存为csv的时候，中文乱码问题。
 
-	np_transform_data：将data转变为np.array
-	
-	calculate_score：计算得分
+		（3）transform_data：本模块用于将cursor获取得到的整张表转变为list的形式，以便生成DataFrame。
 
-	open_ratio：得到每日有客流的店铺占2000家店的比率，可改变输入参数得到更加精确的显示。 	
+		（4）np_transform_data：本模块用于将data 转变为np.array的形式，以便获取每一列。eg: data[:,1],data[:,2]...
+
+		（5）calculate_score：本模块用于计算得分，pre：预测的客流，real：实际的客流。两者都应当为DataFrame。
+
+		（6）conn_MySQL：链接数据库，注意有两个返回值。
+
+		（7）gbk的字符形式链接MySQL，因为utf8的连接方式不能查询中文字符。
+
+		（8）fetch_shop_info：输入sql语句，结果会以dataframe的形式返回。
+
+		（9）csvMerge：将某一路径中所有的csv合称为一个csv文件；csv_dir：csv存在的路径；save_name：生成新的csv的名称
+
+		（10）open_ratio：本函数用于得到任意时间段内2000个商家的开张率（既有客流的商家占总体的比例），纵向比例:同一时间所有商家的开张比例。
+			--注意：日期用数字表示，0:2015-07-01  488:2016-10-31
+
+		（11）every_shop_open_ratio：本函数得到每个商家在任意时间段内“有客流的天数” 占 “总天数的比例”，横向比例：同一商家在指定时间段内的开张比例。threshold:0~1之间的数字，用于筛选符合开张率的商家。
+
+		（12）transform_count_user_pay_datetime：本函数用于将count_user_pay中，列名称全部转变为datetime格式，并且返回。
+
+		（13）draw_single_shop：单个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图。
+			--注意：shop_id 是int；start_day end_day:开始和结束的日期，范围是[0,488]，week=True 时，横坐标用星期表示；fr ='W-WED'表示筛选指定时间段内的周三；
+
+		（14）draw_multi_shops：多个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图。
+			--同上
+		
