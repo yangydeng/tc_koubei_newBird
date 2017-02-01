@@ -141,7 +141,7 @@ def open_ratio(start_col=0,end_col=488):
     for row in count_user_pay.columns[1:]:
         dates.append(row.replace('count_user_pay_',''))
     
-    fig = plt.figure(1)
+    fig = plt.figure(random.randint(1,10000))
     ax = fig.add_subplot(1,1,1)
     if(end_col-start_col<100):    #当时间段小于100天时，会显示具体日期。    
         ax.set_xticks([i for i in range(len(dates[start_col:end_col]))])
