@@ -152,7 +152,8 @@ def open_ratio(start_col=0,end_col=488):
     ax.plot(Open_ratios[start_col:end_col])
 
 '''本函数得到每个商家在任意时间段内“有客流的天数” 占 “总天数的比例”，横向比例。'''
-def every_shop_open_ratio(threshold=0,start_day=0,end_day=488):
+def every_shop_open_ratio(threshold=0,start_day=0,end_day=488,smaller=False):
+    #如果smaller=True 则取开张率小于threshold的商家。
     count_user_pay = pd.read_csv('../csv/count_user_pay.csv')
     Row = len(count_user_pay)
     row = 0
@@ -160,11 +161,14 @@ def every_shop_open_ratio(threshold=0,start_day=0,end_day=488):
     while(row<Row):
         single_row = count_user_pay.ix[row]
         single_row = single_row[start_day:end_day]
-        open_ratio_ = (single_row>threshold).sum()/float(end_day-start_day)
+        open_ratio_ = (single_row>0).sum()/float(end_day-start_day)
         Open_ratios.append(round(open_ratio_,4))
         row = row+1
     Open_ratios = np.array(Open_ratios)
-    mask = Open_ratios>threshold
+    if(smaller):
+        mask = Open_ratios<=threshold
+    else:
+        mask = Open_ratios>=threshold
     df = DataFrame({'shop_id':(count_user_pay.shop_id)[mask].values,'open_ratio':Open_ratios[mask]})
     return  df   #返回大于threshold的shop_id,以及他们对应的开张比例
 
@@ -186,7 +190,8 @@ def transform_count_user_pay_datetime(count_user_pay):
     return count_user_pay
 
 '''单个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图'''
-def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):    
+def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
+        
     start_day = '2015-07-01'
     start_day = datetime.strptime(start_day,'%Y-%m-%d')+timedelta(days=num_start_day)
     end_day = start_day+timedelta(days=num_end_day-num_start_day)
@@ -199,8 +204,9 @@ def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
     
     delta = (end_day-start_day).days
     count_user_pay = pd.read_csv('../csv/count_user_pay.csv')
+    count_user_pay.index = count_user_pay.shop_id.values
     count_user_pay = transform_count_user_pay_datetime(count_user_pay)
-    values = count_user_pay.ix[shop_id,dates]
+    values = count_user_pay.ix[shop_id,dates]  
     fig = plt.figure(random.randint(1,10000))
     ax = fig.add_subplot(111)
     
@@ -218,7 +224,8 @@ def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
     ax.set_title('shop_id:'+str(shop_id)+'   '+start_day.strftime('%Y-%m-%d')+' ~ '+end_day.strftime('%Y-%m-%d'))
     ax.grid()
     plt.subplots_adjust(bottom=0.2)
-    ax.plot(values)
+    ax.plot(values,label=shop_id)
+    ax.legend(loc='best')
 
 '''多个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图'''
 def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):    
@@ -234,6 +241,7 @@ def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
         
     delta = (end_day-start_day).days
     count_user_pay = pd.read_csv('../csv/count_user_pay.csv')
+    count_user_pay.index = count_user_pay.shop_id.values
     count_user_pay = transform_count_user_pay_datetime(count_user_pay)
     values = count_user_pay.ix[shop_id,dates]
     
@@ -251,12 +259,12 @@ def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
     if(delta<100):
         ax.set_xticks([i for i in range(len(values.columns))])  
         ax.set_xticklabels(xticklabels,rotation=-90)
-    ax.set_title('shop_id:'+str(shop_id)+'   '+start_day.strftime('%Y-%m-%d')+' ~ '+end_day.strftime('%Y-%m-%d'))
+    ax.set_title(start_day.strftime('%Y-%m-%d')+' ~ '+end_day.strftime('%Y-%m-%d'))
     ax.grid()
     for i in shop_id:
         ax.plot(values.ix[i],label=str(i))
     plt.subplots_adjust(bottom=0.2)  
-    ax.legend()
+    ax.legend(loc='best')
 
 
     
