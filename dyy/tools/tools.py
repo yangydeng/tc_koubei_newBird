@@ -161,7 +161,7 @@ def every_shop_open_ratio(threshold=0,start_day=0,end_day=488,smaller=False):
     while(row<Row):
         single_row = count_user_pay.ix[row]
         single_row = single_row[start_day:end_day]
-        open_ratio_ = (single_row>0).sum()/float(end_day-start_day)
+        open_ratio_ = (single_row>0).sum()/float(end_day-start_day+1)
         Open_ratios.append(round(open_ratio_,4))
         row = row+1
     Open_ratios = np.array(Open_ratios)
@@ -227,24 +227,24 @@ def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
     ax.plot(values,label=shop_id)
     ax.legend(loc='best')
 
-'''多个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图'''
-def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):    
+'''多个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图，可以计算avg.'''
+def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D',_mean=False,_min=False,_std=False,_25=False,_50=False,_75=False,_max=False): 
     start_day = '2015-07-01'
     start_day = datetime.strptime(start_day,'%Y-%m-%d')+timedelta(days=num_start_day)
     end_day = start_day+timedelta(days=num_end_day-num_start_day)
     dates = pd.date_range(start=start_day,end=end_day,freq=fr)
-    
+        
     try:
         dates = dates.drop(datetime(2015,12,12))
     except ValueError:
         print ''
-        
+            
     delta = (end_day-start_day).days
     count_user_pay = pd.read_csv('../csv/count_user_pay.csv')
     count_user_pay.index = count_user_pay.shop_id.values
     count_user_pay = transform_count_user_pay_datetime(count_user_pay)
     values = count_user_pay.ix[shop_id,dates]
-    
+        
     fig = plt.figure(num=random.randint(1,10000))
     ax = fig.add_subplot(111)    
     xticklabels_date=values.columns
@@ -255,16 +255,37 @@ def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
         xticklabels = xticklabels_week
     else:
         xticklabels = xticklabels_date
-            
+                
     if(delta<100):
         ax.set_xticks([i for i in range(len(values.columns))])  
         ax.set_xticklabels(xticklabels,rotation=-90)
     ax.set_title(start_day.strftime('%Y-%m-%d')+' ~ '+end_day.strftime('%Y-%m-%d'))
     ax.grid()
-    for i in shop_id:
-        ax.plot(values.ix[i],label=str(i))
+    if(_mean):
+        _mean = (values.describe()).ix['mean']
+        ax.plot(_mean,label='avg')
+    elif(_std):
+        _std = (values.describe()).ix['std']
+        ax.plot(_std,label='std')
+    elif(_min):
+        _min = (values.describe()).ix['min']
+        ax.plot(_min,label='min')     
+    elif(_25):
+        _25 = (values.describe()).ix['25%']
+        ax.plot(_25,label='25%')
+    elif(_50):
+        _50 = (values.describe()).ix['50%']
+        ax.plot(_50,label='50%')
+    elif(_75):
+        _75 = (values.describe()).ix['75%']
+        ax.plot(_75,label='75%')
+    elif(_max):
+        _max = (values.describe()).ix['max']
+        ax.plot(_max,label='max')       
+    else:
+        for i in shop_id:
+            ax.plot(values.ix[i],label=str(i))
     plt.subplots_adjust(bottom=0.2)  
     ax.legend(loc='best')
 
 
-    
