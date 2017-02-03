@@ -13,6 +13,7 @@ import os
 from pandas import DataFrame
 import random
 from datetime import datetime,timedelta
+from pandas import DataFrame
 
 '''自动关机函数（包含取消关机功能）'''
 def shutdown(minutes=0,reboot=False):
@@ -54,8 +55,15 @@ def np_transform_data(data):
     return data    
     
 
-'''本模块用于计算得分，pre：预测的客流，real：实际的客流。两者都应当为DataFrame'''
+'''本模块用于计算得分，pre：预测的客流，real：实际的客流。两者都应当为array'''
 def calculate_score(pre,real):
+    if(len(pre.shape)==1):
+        pre = DataFrame(pre,columns=[0])
+        real = DataFrame(real,columns=[0])
+    else:
+        pre = DataFrame(pre,columns=[i for i in range(pre.shape[1])])
+        real = DataFrame(real,columns=[i for i in range(real.shape[1])])        
+        
     if(len(pre)!=len(real)):
         print 'len(pre)!=len(real)','\n'
     if(len(pre.columns)!=len(real.columns)):
@@ -71,8 +79,8 @@ def calculate_score(pre,real):
     while(t<T):
         n=0
         while(n<N):
-            c_it=pre.ix[n,t]        #c_it：预测的客流量
-            c_git = real.ix[n,t]    #c_git：实际的客流量
+            c_it = int(pre.ix[n,t])       #c_it：预测的客流量
+            c_git = int(real.ix[n,t])    #c_git：实际的客流量
             
             
             if(c_it==0 and c_git==0):
@@ -82,7 +90,8 @@ def calculate_score(pre,real):
             L = L+abs((float(c_it)-c_git)/(c_it+c_git))
             n=n+1
         t=t+1
-    print L
+    #print L
+    return L
 
 
 '''链接数据库，注意有两个返回值'''
