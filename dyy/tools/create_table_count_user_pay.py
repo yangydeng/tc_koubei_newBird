@@ -7,7 +7,7 @@ Created on Thu Jan 26 10:00:34 2017
 
 import MySQLdb
 import pandas as pd
-from pandas import DataFrame
+#from pandas import DataFrame
 
 df_count = pd.read_csv('../csv/count_user_pay.csv')
 db = MySQLdb.connect(host="localhost",user='root',passwd="Dyy2008723",db="tc_koubei",charset="utf8")

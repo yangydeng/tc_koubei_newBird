@@ -106,7 +106,7 @@ def conn_MySQL_gbk():
     cursor = db.cursor()
     return cursor,db
 
-'''输入sql语句，结果会以dataframe的形式返回'''
+'''输入sql语句，结果会以dataframe的形式返回，只能查询shop_info'''
 def fetch_shop_info(sql):
     print sql
     cursor,db = conn_MySQL_gbk()
@@ -115,6 +115,20 @@ def fetch_shop_info(sql):
     data = transform_data(data)
     db.close()
     df = DataFrame(data,columns=['shop_id','city_name','location_id','per_pay','score','comment_cnt','shop_level','cate_1_name','cate_2_name','cate_3_name'])
+    return df
+
+''''''
+def fetch_MySQL(sql):
+    print sql 
+    cursor,db = conn_MySQL_gbk()
+    cursor.execute(sql)
+    data = cursor.fetchall()
+    data = np_transform_data(data)
+    db.close()
+    if(len(data.shape)==1):
+        df = DataFrame(data,columns=[0])
+    else:
+        df = DataFrame(data,columns=['col_'+str(i) for i in range(data.shape[1])])
     return df
 
 '''将某一路径中所有的csv合称为一个csv文件。'''

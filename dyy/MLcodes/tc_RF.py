@@ -37,9 +37,9 @@ test_x_val = test_x.values
 test_y_val = test_y.values
 
 kf = KFold(len(train_x.values),n_folds=10,shuffle=True,random_state=1)
-loss = make_scorer(calculate_score,greater_is_better=False)
+score = make_scorer(calculate_score,greater_is_better=False)
 
-clf = GridSearchCV(RF,param_grid=parameters,cv=kf,scoring=loss)
+clf = GridSearchCV(RF,param_grid=parameters,cv=kf,scoring=score)
 clf.fit(train_x_val,train_y_val)
 
 
