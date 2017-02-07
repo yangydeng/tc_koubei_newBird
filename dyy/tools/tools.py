@@ -79,8 +79,8 @@ def calculate_score(pre,real):
     while(t<T):
         n=0
         while(n<N):
-            c_it = int(pre.ix[n,t])       #c_it：预测的客流量
-            c_git = int(real.ix[n,t])    #c_git：实际的客流量
+            c_it = round(pre.ix[n,t])       #c_it：预测的客流量
+            c_git = round(real.ix[n,t])    #c_git：实际的客流量
             
             
             if(c_it==0 and c_git==0):
