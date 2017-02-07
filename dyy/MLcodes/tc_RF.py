@@ -21,15 +21,15 @@ from sklearn.metrics import make_scorer
 #    random_state=1,verbose=0,warm_start=False)
     
 RF = RandomForestRegressor()    
-parameters = {'n_estimators':[100,200,300,400,500],'n_jobs':[-1],'random_state':[1]}
+parameters = {'n_estimators':[600,620,640,660,680],'n_jobs':[-1],'random_state':[1]}
 
-count_user_pay = pd.read_csv('../csv/count_user_pay.csv')
-count_user_pay = transform_count_user_pay_datetime(count_user_pay)
+train = pd.read_csv('../train/train_02_07.csv')
+test = pd.read_csv('../test/test_02_07.csv')
 
-train_x = count_user_pay.ix[:,datetime(2016,10,8):datetime(2016,10,14)]
-train_y = count_user_pay.ix[:,datetime(2016,10,15)]
-test_x = count_user_pay.ix[:,datetime(2016,10,16):datetime(2016,10,22)]
-test_y = count_user_pay.ix[:,datetime(2016,10,23)]
+train_x = train.drop('count_user_pay_2016_10_08',axis=1)
+train_y = train['count_user_pay_2016_10_08']
+test_x = test.drop('count_user_pay_2016_10_15',axis=1)
+test_y = test['count_user_pay_2016_10_15']
 
 train_x_val = train_x.values
 train_y_val = train_y.values
@@ -37,9 +37,9 @@ test_x_val = test_x.values
 test_y_val = test_y.values
 
 kf = KFold(len(train_x.values),n_folds=10,shuffle=True,random_state=1)
-score = make_scorer(calculate_score,greater_is_better=False)
+loss = make_scorer(calculate_score,greater_is_better=False)
 
-clf = GridSearchCV(RF,param_grid=parameters,cv=kf,scoring=score)
+clf = GridSearchCV(RF,param_grid=parameters,cv=kf,scoring=loss)
 clf.fit(train_x_val,train_y_val)
 
 
