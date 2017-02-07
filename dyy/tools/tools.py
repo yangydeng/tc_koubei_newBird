@@ -251,7 +251,7 @@ def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
     ax.legend(loc='best')
 
 '''多个商家客流量的走势图，可调整时间段，也可以按指定的周几绘图，可以计算avg.'''
-def draw_multi_shops(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D',_mean=False,_min=False,_std=False,_25=False,_50=False,_75=False,_max=False): 
+def draw_multi_shops(shop_id=[i for i in range(2000)],num_start_day=0,num_end_day=488,week=False,fr='D',_mean=False,_min=False,_std=False,_25=False,_50=False,_75=False,_max=False): 
     start_day = '2015-07-01'
     start_day = datetime.strptime(start_day,'%Y-%m-%d')+timedelta(days=num_start_day)
     end_day = start_day+timedelta(days=num_end_day-num_start_day)

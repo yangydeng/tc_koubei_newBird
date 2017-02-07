@@ -21,7 +21,7 @@ from sklearn.metrics import make_scorer
 #    random_state=1,verbose=0,warm_start=False)
     
 RF = RandomForestRegressor()    
-parameters = {'n_estimators':[600,620,640,660,680],'n_jobs':[-1],'random_state':[1]}
+parameters = {'n_estimators':[640],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[5,8,15,25,30,None]}
 
 train = pd.read_csv('../train/train_02_07.csv')
 test = pd.read_csv('../test/test_02_07.csv')
