@@ -23,13 +23,10 @@ from sklearn.metrics import make_scorer
 RF = RandomForestRegressor()    
 parameters = {'n_estimators':[640],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[25]}
 
-train = pd.read_csv('../train/train_02_07_2.csv')
-test = pd.read_csv('../test/test_02_07_2.csv')
-
-train_x = train.drop('2016-10-30 00:00:00',axis=1)
-train_y = train['2016-10-30 00:00:00']
-test_x = test.drop('2016-10-31 00:00:00',axis=1)
-test_y = test['2016-10-31 00:00:00']
+train_x = pd.read_csv('../train/train_x_02_08_2.csv')
+train_y = pd.read_csv('../train/train_y_02_08_2.csv')
+test_x = pd.read_csv('../test/test_x_02_08_2.csv')
+test_y = pd.read_csv('../test/test_y_02_08_2.csv')
 
 train_x_val = train_x.values
 train_y_val = train_y.values

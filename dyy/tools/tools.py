@@ -91,7 +91,7 @@ def calculate_score(pre,real):
             n=n+1
         t=t+1
     #print L
-    return L
+    return L/(N*T)
 
 
 '''链接数据库，注意有两个返回值'''
