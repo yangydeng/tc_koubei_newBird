@@ -21,7 +21,7 @@ from sklearn.metrics import make_scorer
 #    random_state=1,verbose=0,warm_start=False)
     
 RF = RandomForestRegressor()    
-parameters = {'n_estimators':[640],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[25]}
+parameters = {'n_estimators':[500],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[25]}
 
 train_x = pd.read_csv('../train/train_x_02_08_2.csv')
 train_y = pd.read_csv('../train/train_y_02_08_2.csv')
@@ -33,7 +33,7 @@ train_y_val = train_y.values
 test_x_val = test_x.values
 test_y_val = test_y.values
 
-kf = KFold(len(train_x.values),n_folds=10,shuffle=True,random_state=1)
+kf = KFold(len(train_x.values),n_folds=5,shuffle=True,random_state=1)
 loss = make_scorer(calculate_score,greater_is_better=False)
 
 clf = GridSearchCV(RF,param_grid=parameters,cv=kf,scoring=loss)

@@ -311,4 +311,26 @@ def draw_multi_shops(shop_id=[i for i in range(2000)],num_start_day=0,num_end_da
     plt.subplots_adjust(bottom=0.2)  
     ax.legend(loc='best')
 
+'''将clf.predict(~) 得到的结果转变为df的格式，，加入shop_id,并且将一个星期变为两个星期。'''
+def get_result(result):
+    result = result.round()
+    if(len(result.shape)==1):
+        df = DataFrame(result,columns=[0])
+    else:
+        df = DataFrame(result,columns=['col_'+str(i) for i in range(result.shape[1])])
+    df.insert(0,'shop_id',[i for i in range(1,2001)])
+    df = pd.merge(df,df,on='shop_id')
+    return df        
+
+
+def transfrom_Arr_DF(arr):
+    if(len(arr.shape)==1):
+        df = DataFrame(arr,columns=['col_0'])
+    else:
+        df = DataFrame(arr,columns=['col_'+str(i) for i in range(arr.shape[1])])
+    return df
+
+
+
+
 
