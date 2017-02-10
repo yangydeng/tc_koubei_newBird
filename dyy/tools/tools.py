@@ -13,7 +13,8 @@ import os
 from pandas import DataFrame
 import random
 from datetime import datetime,timedelta
-#from pandas import DataFrame
+from sklearn import preprocessing  
+
 
 '''自动关机函数（包含取消关机功能）'''
 def shutdown(minutes=0,reboot=False):
@@ -323,14 +324,24 @@ def get_result(result):
     return df        
 
 
-def transfrom_Arr_DF(arr):
+def transfrom_Arr_DF(arr,col_name = 'col_'):
     if(len(arr.shape)==1):
         df = DataFrame(arr,columns=['col_0'])
     else:
-        df = DataFrame(arr,columns=['col_'+str(i) for i in range(arr.shape[1])])
+        df = DataFrame(arr,columns=[col_name+str(i) for i in range(arr.shape[1])])
     return df
 
-
-
+def make_OHE(names):
+    data = []
+    for name in names:
+        data.append([name])
+            
+    enc = preprocessing.OneHotEncoder()
+    enc.fit(data)
+    OHE_data = enc.transform(data).toarray()  
+    return OHE_data
+        
+        
+        
 
 
