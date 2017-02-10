@@ -323,7 +323,7 @@ def get_result(result):
     df = pd.merge(df,df,on='shop_id')
     return df        
 
-
+'''将多维数组转换为DataFrame'''
 def transfrom_Arr_DF(arr,col_name = 'col_'):
     if(len(arr.shape)==1):
         df = DataFrame(arr,columns=['col_0'])
@@ -331,11 +331,11 @@ def transfrom_Arr_DF(arr,col_name = 'col_'):
         df = DataFrame(arr,columns=[col_name+str(i) for i in range(arr.shape[1])])
     return df
 
+'''将一维数组转换为OHE码'''
 def make_OHE(names):
     data = []
     for name in names:
-        data.append([name])
-            
+        data.append([name])          
     enc = preprocessing.OneHotEncoder()
     enc.fit(data)
     OHE_data = enc.transform(data).toarray()  

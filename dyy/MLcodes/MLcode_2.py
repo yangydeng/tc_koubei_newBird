@@ -11,7 +11,7 @@ import sys
 sys.path.append('../tools')
 from tools import get_result
 
-day_time = '_02_10_3'
+day_time = '_02_11_2'
 
 train_x = pd.read_csv('../train_2/train_x'+day_time+'.csv')
 train_y = pd.read_csv('../train_2/train_y'+day_time+'.csv')
@@ -24,4 +24,4 @@ pre = (RF.predict(test_x)).round()
 
 result = get_result(pre)
 
-result.to_csv('../results/result'+day_time+'.csv')
+result.to_csv('../results/result'+day_time+'.csv',index=False,header=False)
