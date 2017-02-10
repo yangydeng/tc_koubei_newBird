@@ -148,7 +148,7 @@ def csvMerge(csv_dir,save_name):
 
 '''本函数用于得到任意时间段内2000个商家的开张率（既有客流的商家占总体的比例），纵向比例。'''
 def open_ratio(start_col=0,end_col=488):
-    count_user_pay = pd.read_csv('../csv/count_user_and_pay/count_user_pay.csv')
+    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
     Col = len(count_user_pay.columns)
     
     col = 1 #col 从1开始，因为第一列是shop_id
@@ -177,7 +177,7 @@ def open_ratio(start_col=0,end_col=488):
 '''本函数得到每个商家在任意时间段内“有客流的天数” 占 “总天数的比例”，横向比例。'''
 def every_shop_open_ratio(threshold=0,start_day=0,end_day=488,smaller=False):
     #如果smaller=True 则取开张率小于threshold的商家。
-    count_user_pay = pd.read_csv('../csv/count_user_and_pay/count_user_pay.csv')
+    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
     Row = len(count_user_pay)
     row = 0
     Open_ratios = []
@@ -226,7 +226,7 @@ def draw_single_shop(shop_id,num_start_day=0,num_end_day=488,week=False,fr='D'):
         print ''        
     
     delta = (end_day-start_day).days
-    count_user_pay = pd.read_csv('../csv/count_user_and_pay/count_user_pay.csv')
+    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
     count_user_pay.index = count_user_pay.shop_id.values
     count_user_pay = transform_count_user_pay_datetime(count_user_pay)
     values = count_user_pay.ix[shop_id,dates]  
@@ -263,7 +263,7 @@ def draw_multi_shops(shop_id=[i for i in range(2000)],num_start_day=0,num_end_da
         print ''
             
     delta = (end_day-start_day).days
-    count_user_pay = pd.read_csv('../csv/count_user_and_pay/count_user_pay.csv')
+    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
     count_user_pay.index = count_user_pay.shop_id.values
     count_user_pay = transform_count_user_pay_datetime(count_user_pay)
     values = count_user_pay.ix[shop_id,dates]
