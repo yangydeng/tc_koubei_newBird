@@ -20,7 +20,7 @@ weekD = pd.read_csv('../csv/weekABCD/weekD.csv'); weekD.index=weekD.shop_id
 shop_info_num = pd.read_csv('../csv/shop_info_num.csv')
 
 '''     degree 应当为 3     '''
-poly = PolynomialFeatures(3,interaction_only=True)
+poly = PolynomialFeatures(1,interaction_only=False)
 
 train_x = (pd.merge(weekA,weekB,on='shop_id')).drop('shop_id',axis=1)       #train = weekA + weekB
 train_sum = train_x.sum(axis=1)
