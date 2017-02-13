@@ -7,21 +7,30 @@ Created on Fri Feb 10 12:40:05 2017
 
 import pandas as pd
 import sys
-#from sklearn.preprocessing import PolynomialFeatures
+from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import *
 
-day_time = '_02_11_2'
+day_time = '_02_13_3'
 
 weekA = pd.read_csv('../csv/weekABCD/weekA.csv'); weekA.index=weekA.shop_id
 weekB = pd.read_csv('../csv/weekABCD/weekB.csv'); weekB.index=weekB.shop_id
 weekC = pd.read_csv('../csv/weekABCD/weekC.csv'); weekC.index=weekC.shop_id
 weekD = pd.read_csv('../csv/weekABCD/weekD.csv'); weekD.index=weekD.shop_id
+
+weekA_view = pd.read_csv('../csv/weekABCD/weekA_view.csv'); weekA_view.index = weekA_view.shop_id
+weekB_view = pd.read_csv('../csv/weekABCD/weekB_view.csv'); weekB_view.index = weekB_view.shop_id
+weekC_view = pd.read_csv('../csv/weekABCD/weekC_view.csv'); weekC_view.index = weekC_view.shop_id
+weekD_view = pd.read_csv('../csv/weekABCD/weekD_view.csv'); weekD_view.index = weekD_view.shop_id
 shop_info_num = pd.read_csv('../csv/shop_info_num.csv')
 
-#poly = PolynomialFeatures(2,interaction_only=True)
+'''  poly   degree=2     '''
+poly = PolynomialFeatures(2,interaction_only=True,include_bias=False)
 train_x = pd.merge(weekA,weekB,on='shop_id')                                       #train = weekA+ weekB + weekC
 train_x = (pd.merge(train_x,weekC,on='shop_id')).drop('shop_id',axis=1)
+train_x_view = pd.merge(weekA_view,weekB_view,on='shop_id')
+train_x_view = (pd.merge(train_x_view,weekC_view,on='shop_id')).drop('shop_id',axis=1)
+
 train_sum = train_x.sum(axis=1)
 train_mean = train_x.mean(axis=1)
 train_open_ratio_A = every_shop_open_ratio(start_day=447,end_day=453)
@@ -71,7 +80,7 @@ OHE_score = transfrom_Arr_DF(make_OHE(shop_info_num.score),'shop_info_score_')
 #   make shop_info.shop_level 的OHE码
 OHE_shop_level = transfrom_Arr_DF(make_OHE(shop_info_num.shop_level),'shop_info_level_')
 
-#train_x = transfrom_Arr_DF(poly.fit_transform(train_x))
+train_x = transfrom_Arr_DF(poly.fit_transform(train_x))
 train_x['sumABCD'] = train_sum
 train_x['open_ratio'] = train_open_ratio
 train_x['ratio_wk'] = train_ratio_wk
@@ -83,6 +92,7 @@ train_x = train_x.join(OHE_cate_3,how='left')
 #train_x['location_id'] = shop_info_num.location_id
 #train_x = train_x.join(OHE_score,how='left')
 train_x = train_x.join(OHE_shop_level,how='left')
+train_x = train_x.join(train_x_view)
 
 train_y = weekD.drop('shop_id',axis=1)
 
@@ -91,13 +101,16 @@ train_y.to_csv('../train_2/train_y'+day_time+'.csv',index=False)
 #--------------------------------------------------------------------------------------------------------------------------------------------------------
 test_x = pd.merge(weekB,weekC,on='shop_id')                                         #test = weekB + weekC + weekD 
 test_x = (pd.merge(test_x,weekD,on='shop_id')).drop('shop_id',axis=1)
+test_x_view = pd.merge(weekB_view,weekC_view,on='shop_id')
+test_x_view = (pd.merge(test_x_view,weekD_view)).drop('shop_id',axis=1)
+
 test_sum = test_x.sum(axis=1)
 test_mean = test_x.mean(axis=1)
 test_open_ratio = every_shop_open_ratio(start_day=468)
 test_weekend = ['2016-10-15 00:00:00','2016-10-16 00:00:00','2016-10-22 00:00:00','2016-10-23 00:00:00','2016-10-29 00:00:00','2016-10-30 00:00:00']
 test_ratio_wk = (test_x[test_weekend]).sum(axis=1)/(test_sum.replace(0,1))
 
-#test_x = transfrom_Arr_DF(poly.fit_transform(test_x))
+test_x = transfrom_Arr_DF(poly.fit_transform(test_x))
 test_x['sumABCD'] = test_sum
 test_x['open_ratio'] = test_open_ratio.open_ratio
 test_x['ratio_wk'] = test_ratio_wk
@@ -109,6 +122,7 @@ test_x = test_x.join(OHE_cate_3,how='left')
 #test_x['location_id'] = shop_info_num.location_id
 #test_x = test_x.join(OHE_score,how='left')
 test_x = test_x.join(OHE_shop_level,how='left')
+test_x = test_x.join(test_x_view)
 
 test_x.to_csv('../test_2/test_x'+day_time+'.csv',index=False)
 

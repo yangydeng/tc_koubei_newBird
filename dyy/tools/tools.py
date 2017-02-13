@@ -401,7 +401,6 @@ def draw_multi_shops_view(shop_id=[i for i in range(1,2001)],num_start_day=0,num
 
 '''将clf.predict(~) 得到的结果转变为df的格式，，加入shop_id,并且将一个星期变为两个星期。'''
 def get_result(result):
-    result = result.round()
     if(len(result.shape)==1):
         df = DataFrame(result,columns=[0])
     else:

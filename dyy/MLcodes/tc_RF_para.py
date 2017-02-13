@@ -15,18 +15,20 @@ from sklearn.cross_validation import KFold
 from sklearn.grid_search import GridSearchCV
 from sklearn.metrics import make_scorer
 
+day_time = '_02_13_3'
+
 #RF = RandomForestRegressor(n_estimators=100,criterion='mse',max_depth=None,\
 #    min_samples_split=5,min_samples_leaf=1,min_weight_fraction_leaf=0.0,\
 #    max_features='log2',max_leaf_nodes=None,bootstrap=True,oob_score=False,n_jobs=-1,\
 #    random_state=1,verbose=0,warm_start=False)
     
 RF = RandomForestRegressor()    
-parameters = {'n_estimators':[500],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[25]}
+parameters = {'n_estimators':[1200],'n_jobs':[-1],'random_state':[1],'min_samples_split':[2],'min_samples_leaf':[2],'max_depth':[25]}
 
-train_x = pd.read_csv('../train/train_x_02_08_2.csv')
-train_y = pd.read_csv('../train/train_y_02_08_2.csv')
-test_x = pd.read_csv('../test/test_x_02_08_2.csv')
-test_y = pd.read_csv('../test/test_y_02_08_2.csv')
+train_x = pd.read_csv('../train_1/train_x'+day_time+'.csv')
+train_y = pd.read_csv('../train_1/train_y'+day_time+'.csv')
+test_x = pd.read_csv('../test_1/test_x'+day_time+'.csv')
+test_y = pd.read_csv('../test_1/test_y'+day_time+'.csv')
 
 train_x_val = train_x.values
 train_y_val = train_y.values

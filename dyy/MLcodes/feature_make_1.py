@@ -11,18 +11,26 @@ from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import *
 
-day_time = '_02_11_2'
+day_time = '_02_13_3'
 
 weekA = pd.read_csv('../csv/weekABCD/weekA.csv'); weekA.index=weekA.shop_id
 weekB = pd.read_csv('../csv/weekABCD/weekB.csv'); weekB.index=weekB.shop_id
 weekC = pd.read_csv('../csv/weekABCD/weekC.csv'); weekC.index=weekC.shop_id
 weekD = pd.read_csv('../csv/weekABCD/weekD.csv'); weekD.index=weekD.shop_id
+
+weekA_view = pd.read_csv('../csv/weekABCD/weekA_view.csv'); weekA_view.index = weekA_view.shop_id
+weekB_view = pd.read_csv('../csv/weekABCD/weekB_view.csv'); weekB_view.index = weekB_view.shop_id
+weekC_view = pd.read_csv('../csv/weekABCD/weekC_view.csv'); weekC_view.index = weekC_view.shop_id
+weekD_view = pd.read_csv('../csv/weekABCD/weekD_view.csv'); weekD_view.index = weekD_view.shop_id
+
 shop_info_num = pd.read_csv('../csv/shop_info_num.csv')
 
-'''     degree 应当为 3     '''
-poly = PolynomialFeatures(1,interaction_only=False)
+'''     degree 应当为 2     '''
+poly = PolynomialFeatures(2,interaction_only=True,include_bias=False)
 
 train_x = (pd.merge(weekA,weekB,on='shop_id')).drop('shop_id',axis=1)       #train = weekA + weekB
+train_x_view = (pd.merge(weekA_view,weekB_view,on='shop_id')).drop('shop_id',axis=1)
+
 train_sum = train_x.sum(axis=1)
 train_mean = train_x.mean(axis=1)
 train_weekend = ['2016-09-24 00:00:00','2016-09-25 00:00:00','2016-10-15 00:00:00','2016-10-16 00:00:00']
@@ -85,6 +93,7 @@ train_x = train_x.join(OHE_cate_3,how='left')
 #train_x['location_id'] = shop_info_num.location_id
 #train_x = train_x.join(OHE_score,how='left')
 train_x = train_x.join(OHE_shop_level,how='left')
+train_x = train_x.join(train_x_view)
 
 train_y = weekC.drop('shop_id',axis=1)
 
@@ -92,6 +101,8 @@ train_x.to_csv('../train_1/train_x'+day_time+'.csv',index=False)
 train_y.to_csv('../train_1/train_y'+day_time+'.csv',index=False)
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 test_x = (pd.merge(weekB,weekC,on='shop_id')).drop('shop_id',axis=1)    #test = weekC + weekD
+test_x_view = (pd.merge(weekB_view,weekC_view,on='shop_id')).drop('shop_id',axis=1)   
+
 test_sum = test_x.sum(axis=1)
 test_mean = test_x.mean(axis=1)
 test_weekend = ['2016-10-15 00:00:00','2016-10-16 00:00:00','2016-10-22 00:00:00','2016-10-23 00:00:00']
@@ -110,6 +121,7 @@ test_x = test_x.join(OHE_cate_3,how='left')
 #test_x['location_id'] = shop_info_num.location_id
 #test_x = test_x.join(OHE_score,how='left')
 test_x = test_x.join(OHE_shop_level,how='left')
+test_x = test_x.join(test_x_view)
 
 test_y = weekD.drop('shop_id',axis=1)
 
