@@ -14,6 +14,10 @@ from pandas import DataFrame
 import random
 from datetime import datetime,timedelta
 from sklearn import preprocessing  
+from selenium import webdriver
+import time
+from pymouse import PyMouse
+from pykeyboard import PyKeyboard
 
 
 '''自动关机函数（包含取消关机功能）'''
@@ -84,7 +88,7 @@ def calculate_score(pre,real):
             c_git = round(real.ix[n,t])    #c_git：实际的客流量
             
             
-            if(c_it==0 and c_git==0):
+            if((c_it==0 and c_git==0) or (c_it+c_git)==0 ):
                 c_it=1
                 c_git=1
             
@@ -428,6 +432,69 @@ def make_OHE(names):
     return OHE_data
         
         
+'''画出estimator的feature_importance'''
+def draw_feature_importance(train_x,clf):
+    feature_names = train_x.columns
+    feature_importance = clf.feature_importances_
+    df = DataFrame({'feature_names':feature_names,'feature_importances':feature_importance})
+    df1 = df.sort(columns='feature_importances',ascending=False)
+    df1.index = [i for i in range(len(df1))]
+    fig = plt.figure(num=random.randint(1,10000))
+    ax = fig.add_subplot(111) 
         
+    ax.set_xticks([i for i in range(len(df.feature_names))]) 
+    ax.set_xticklabels(df1.feature_names,rotation=-90)
+    ax.grid()
+    ax.plot(df1.feature_importances,label='feature_importance')
+    plt.subplots_adjust(bottom=0.2)
+    
+'''用于自动提交结果，需要设定提交时间，提交完后默认1分钟后关机。'''   
+def auto_submit_and_shutdown(result_name,submit_time,shutdown_flag=True):
+    while(True):
+        if(submit_time == time.strftime('%H:%M')):
+            browser = webdriver.Firefox()
+            browser.maximize_window()   
+            browser.get('https://account.aliyun.com/login/login.htm?oauth_callback=https%3A%2F%2Ftianchi.shuju.aliyun.com%2Fcompetition%2Finformation.htm%3Fspm%3D5176.100069.5678.2.Jypv0M%26raceId%3D231591%26_is_login_redirect%3Dtrue%26_is_login_redirect%3Dtrue')
+            browser.switch_to_frame('alibaba-login-box')
+            element = browser.find_element_by_id('J_Quick2Static')
+            time.sleep(10.3)
+            element.click()     #选择账号密码登录
+            
+            mouse = PyMouse()
+            keyboard = PyKeyboard()
+            
+            mouse.click(1200,410)           #选中账号框格
+            keyboard.type_string('hipt')
+            time.sleep(10)
+            keyboard.type_string('onese')
+            mouse.click(1200,480)
+            keyboard.type_string('2008723lgy')
+            browser.find_element_by_id("login-submit").click()
+            time.sleep(15)               #给手机验证者预留的时间
+            mouse.click(400,630)    #选择提交结果
+            time.sleep(10.3)
+            mouse.click(800,490)    #选中提交窗口
+            time.sleep(10.2)
+            keyboard.type_string('G:\\tc_koubei_newBird\\dyy\\results\\'+result_name+'.csv')
+            keyboard.press_key('\n')
+            time.sleep(1)
+            keyboard.release_key('\n')
+            time.sleep(2)
+            if(shutdown_flag):
+                shutdown(1)
+            break;
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 

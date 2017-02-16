@@ -11,7 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import *
 
-day_time = '_02_13_3'
+day_time = '_02_16_3'
 
 weekA = pd.read_csv('../csv/weekABCD/weekA.csv'); weekA.index=weekA.shop_id
 weekB = pd.read_csv('../csv/weekABCD/weekB.csv'); weekB.index=weekB.shop_id
@@ -38,6 +38,12 @@ train_ratio_wk = (train_x[train_weekend]).sum(axis=1)/(train_sum.replace(0,1))
 train_open_ratio_wkA = every_shop_open_ratio(start_day=447,end_day=453)
 train_open_ratio_wkB = every_shop_open_ratio(start_day=468,end_day=474)
 train_open_ratio = (train_open_ratio_wkA.open_ratio + train_open_ratio_wkB.open_ratio)/2
+train_std = train_x.std(axis=1)
+train_max = train_x.max(axis=1)
+train_min = train_x.min(axis=1)
+train_median = train_x.median(axis=1)
+train_mad = train_x.mad(axis=1)
+train_var = train_x.var(axis=1) 
 
 #   make城市的OHE码
 names = []          
@@ -82,6 +88,7 @@ OHE_score = transfrom_Arr_DF(make_OHE(shop_info_num.score),'shop_info_score_')
 OHE_shop_level = transfrom_Arr_DF(make_OHE(shop_info_num.shop_level),'shop_info_level_')
 
 train_x = transfrom_Arr_DF(poly.fit_transform(train_x)) #将其中的日期生成多项式
+#poly_weekB = transfrom_Arr_DF(poly.fit_transform(weekB.drop('shop_id',axis=1)),'weekB_')
 train_x['sumABCD'] = train_sum    #加入总数
 train_x['meanABCD'] = train_mean     #加入平均数
 train_x['ratio_wk'] = train_ratio_wk  #周末占总量的比例
@@ -94,6 +101,13 @@ train_x = train_x.join(OHE_cate_3,how='left')
 #train_x = train_x.join(OHE_score,how='left')
 train_x = train_x.join(OHE_shop_level,how='left')
 train_x = train_x.join(train_x_view)
+#train_x = train_x.join(poly_weekB)
+train_x['std'] = train_std
+train_x['max'] = train_max
+train_x['min'] = train_min
+train_x['median'] = train_median
+train_x['mad'] = train_mad
+train_x['var'] = train_var
 
 train_y = weekC.drop('shop_id',axis=1)
 
@@ -108,6 +122,12 @@ test_mean = test_x.mean(axis=1)
 test_weekend = ['2016-10-15 00:00:00','2016-10-16 00:00:00','2016-10-22 00:00:00','2016-10-23 00:00:00']
 test_ratio_wk = (test_x[test_weekend]).sum(axis=1)/(test_sum.replace(0,1))
 test_open_ratio = every_shop_open_ratio(start_day=468,end_day=481)
+test_std = test_x.std(axis=1)
+test_max = test_x.max(axis=1)
+test_min = test_x.min(axis=1)
+test_median = test_x.median(axis=1)
+test_mad = test_x.mad(axis=1)
+test_var = test_x.var(axis=1)
 
 test_x = transfrom_Arr_DF(poly.fit_transform(test_x))
 test_x['sumABCD'] = test_sum
@@ -122,6 +142,13 @@ test_x = test_x.join(OHE_cate_3,how='left')
 #test_x = test_x.join(OHE_score,how='left')
 test_x = test_x.join(OHE_shop_level,how='left')
 test_x = test_x.join(test_x_view)
+#test_x = test_x.join(poly_weekB)
+test_x['std'] = test_std
+test_x['max'] = test_max
+test_x['min'] = test_min
+test_x['median'] = test_median
+test_x['mad'] = test_mad
+test_x['var'] = test_var
 
 test_y = weekD.drop('shop_id',axis=1)
 
