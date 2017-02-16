@@ -1,1 +1,0 @@
-﻿count_user_pay.csv: 保存了每个商家每天的客流量；columns的格式为 count_user_pay_yyyy_mm_dd
