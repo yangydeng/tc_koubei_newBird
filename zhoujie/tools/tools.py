@@ -539,8 +539,8 @@ def draw_result(result,_mean=1,_std=0,_min=0,_25=0,_50=0,_75=0,_max=0,result_nam
     
     
 def read_two_results():
-    result_name1 = 'result_03_01_1'  #（zj）保守算法
-    result_name2 = 'result_03_02_2_pre'     #激进算法 (analysis_2015)
+    result_name1 = 'result_02_29_1'  #保守算法
+    result_name2 = 'result_02_21_1'     #激进算法
     result1 = pd.read_csv('../results/'+result_name1+'.csv',names=['shop_id','Tue_1','Wed_1','Thu_1','Fri_1','Sat_1','Sun_1','Mon_1','Tue_2','Wed_2','Thu_2','Fri_2','Sat_2','Sun_2','Mon_2'])        
     result2 = pd.read_csv('../results/'+result_name2+'.csv',names=['shop_id','Tue_1','Wed_1','Thu_1','Fri_1','Sat_1','Sun_1','Mon_1','Tue_2','Wed_2','Thu_2','Fri_2','Sat_2','Sun_2','Mon_2'])        
     return result1,result2
@@ -577,53 +577,9 @@ def read_result(name):
         result = pd.read_csv('../results/'+name+'.csv',names=['shop_id','Tue_1','Wed_1','Thu_1','Fri_1','Sat_1','Sun_1','Mon_1','Tue_2','Wed_2','Thu_2','Fri_2','Sat_2','Sun_2','Mon_2'])        
         return result
 
-def get_open_15():
-    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
-    count_user_pay = transform_count_user_pay_datetime(count_user_pay)
-    
-    # 15-07 开业的店铺
-    open_15_07 = every_shop_open_ratio(0.001,0,30)
-    # 15-11 期间开业的店铺
-    open_15_11 = every_shop_open_ratio(0.9,104,138)
-                            
-    open_15_07 = open_15_07.shop_id.values
-    open_15_11 = open_15_11.shop_id.values
-    #取交集
-    open_15 = set(open_15_07) & set(open_15_11)
-    open_15 = list(open_15)
-    open_15.sort()
-    return open_15
-
-def get_open_16():
-    count_user_pay = pd.read_csv('../csv/count_pay_and_view/count_user_pay.csv')
-    count_user_pay = transform_count_user_pay_datetime(count_user_pay)
-    
-    # 16-05 前未开业的店铺,取开业率小于0.001的商家ID
-    close_16_06 = every_shop_open_ratio(0.001,0,306,True)
-    # 16-07 开业的店铺
-    open_16_07 = every_shop_open_ratio(0.9,367,397)
-    # 16-11 之前开业的店铺
-    open_16_11 = every_shop_open_ratio(0.9,470,488)
-           
-    close_16_06 = close_16_06.shop_id.values                 
-    open_16_07 = open_16_07.shop_id.values
-    open_16_11 = open_16_11.shop_id.values
-    
-    #取交集，得到在16-06才首次开业，并且在16-11之前开业情况良好的商家。 297家
-    open_16 = set(open_16_07) & set(close_16_06) & set(open_16_11)
-    open_16 = list(open_16)
-    open_16.sort()
-    return open_16
-
 
 def combine_two_results(labels = [False for i in range(2000)]):
     res1,res2 = read_two_results()
-    
-    res1_Sat_1 = res1.Sat_1.values    
-    res2_Sat_1 = res2.Sat_1.values
-
-    res1_Sun_1 = res1.Sun_1.values
-    res2_Sun_1 = res2.Sun_1.values    
     
     res1_Wed_2 = res1.Wed_2.values
     res2_Wed_2 = res2.Wed_2.values            
@@ -641,32 +597,34 @@ def combine_two_results(labels = [False for i in range(2000)]):
     res2_Sun_2 = res2.Sun_2.values
     
     res1_Mon_2 = res1.Mon_2.values
-    res2_Mon_2 = res2.Mon_1.values
-    
-    open_15 = get_open_15()
-    #open_16 = get_open_16()    
-    
-    for i in open_15:  #open_15/6 是 商家的id,从1开始   
-    
-        #数组的index从0开始，因此要-1             
-  
-    
-        if(res1_Wed_2[i-1] < res2_Wed_2[i-1]):# and (labels[i] or res2_Wed_2[i]<200) ):
-            res1_Wed_2[i-1] = res2_Wed_2[i-1]
-    
-        if(res1_Fri_2[i-1] < res2_Fri_2[i-1]):# and (labels[i] or res2_Fri_2[i]<200) ):
-            res1_Fri_2[i-1] = res2_Fri_2[i-1]
-            
+    res2_Mon_1 = res2.Mon_1.values
 
-                    
-#    res1.Sat_1 = res1_Sat_1
-#    res1.Sun_1 = res1_Sun_1
+    for i in range(2000):  
+        if(res1_Wed_2[i] < res2_Wed_2[i] and (labels[i] or res2_Wed_2[i]<200) ):
+            res1_Wed_2[i] = round((res2_Wed_2[i]+2*res1_Wed_2[i])/3.0)         
+        
+#        if((res1_Thu_2[i] < res2_Thu_2[i]) and (res2_Thu_2[i]<200) ):
+#            res1_Thu_2[i] = round((res2_Thu_2[i]+2*res1_Thu_2[i])/3.0)         
+            
+        if((res1_Fri_2[i] < res2_Fri_2[i]) and (labels[i] or res2_Fri_2[i]<200) ):
+            res1_Fri_2[i] = round((res2_Fri_2[i]+2*res1_Fri_2[i])/3.0) 
+            
+#        if((res1_Sat_2[i] < res2_Sat_2[i]) and (res2_Sat_2[i]<250)  and (res1_Sat_2[i]>100)):
+#            res1_Sat_2[i] = round((res2_Sat_2[i]+2*res1_Sat_2[i])/3.0) 
+            
+            
+#        if((res1_Sun_2[i] < res2_Sun_2[i]) and (res2_Sun_2[i]<200) and (res1_Sun_2[i]>100)):         
+#            res1_Sun_2[i] = round((res2_Sun_2[i]+2*res1_Sun_2[i])/3.0) 
+             
+#        if((res1_Mon_2[i] < res2_Mon_1[i]) and (labels[i] or res2_Mon_1[i]<200)):
+#            res1_Mon_2[i] = round((res2_Mon_1[i]+2*res1_Mon_2[i])/3.0)            
+            
     res1.Wed_2 = res1_Wed_2      
 #    res1.Thu_2 = res1_Thu_2        
     res1.Fri_2 = res1_Fri_2
 #    res1.Sat_2 = res1_Sat_2
 #    res1.Sun_2 = res1_Sun_2  
-    #res1.Mon_2 = res1_Mon_2
+#    res1.Mon_2 = res1_Mon_2
     
     return res1
         

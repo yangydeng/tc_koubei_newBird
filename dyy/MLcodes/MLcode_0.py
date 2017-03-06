@@ -11,9 +11,9 @@ from sklearn.ensemble import ExtraTreesRegressor
 from sklearn.ensemble import GradientBoostingRegressor
 import sys
 sys.path.append('../tools')
-from tools import get_result
+from tools import get_result,draw_feature_importance
 
-day_time = '_02_16_3'
+day_time = '_03_01_3'
 
 train_x = pd.read_csv('../train_0/train_x'+day_time+'.csv')
 train_y = pd.read_csv('../train_0/train_y'+day_time+'.csv')
@@ -24,7 +24,7 @@ test_x = pd.read_csv('../test_0/test_x'+day_time+'.csv')
 #RF.fit(train_x,train_y)
 #pre = (RF.predict(test_x)).round()
 
-ET = ExtraTreesRegressor(n_estimators=1200,random_state=1,n_jobs=-1,min_samples_split=2,min_samples_leaf=2,max_depth=25,max_features=270)
+ET = ExtraTreesRegressor(n_estimators=1200,random_state=1,n_jobs=-1,min_samples_split=2,min_samples_leaf=2,max_depth=25,max_features='sqrt',bootstrap=0)
 ET.fit(train_x,train_y)
 pre = (ET.predict(test_x)).round()
 
@@ -32,3 +32,4 @@ pre = (ET.predict(test_x)).round()
 result = get_result(pre)
 
 result.to_csv('../results/result'+day_time+'.csv',index=False,header=False)
+#draw_feature_importance(train_x,ET)

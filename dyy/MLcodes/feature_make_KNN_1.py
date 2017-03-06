@@ -1,23 +1,16 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Feb 10 10:18:06 2017
+Created on Wed Feb 22 16:20:20 2017
 
 @author: Administrator
 """
-
 import pandas as pd
 import sys
 from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import every_shop_open_ratio,transfrom_Arr_DF,make_OHE,week_poly_2
 
-day_time = '_02_27_2'
-add_weekends = pd.read_csv('../csv/add_weekends.csv')
-add_Aug = pd.read_csv('../csv/add_Aug.csv')
-add_2016 = pd.read_csv('../csv/add_2016.csv')
-add_July_Aug = pd.read_csv('../csv/add_July_Aug.csv')
-analysis_all_week = pd.read_csv('../csv/analysis_all_week.csv')
-point_feature = pd.read_csv('../csv/point_feature.csv')
+day_time = '_02_22_3'
 
 weekA = pd.read_csv('../csv/weekABCD/weekA.csv')
 weekB = pd.read_csv('../csv/weekABCD/weekB.csv')
@@ -99,13 +92,13 @@ train_x['sumABCD'] = train_sum    #加入总数
 train_x['meanABCD'] = train_mean     #加入平均数
 train_x['ratio_wk'] = train_ratio_wk  #周末占总量的比例
 train_x['open_ratio_ABCD'] = train_open_ratio.values    #加入开业比例
-train_x = train_x.join(OHE_city_name,how='left')
-train_x = train_x.join(OHE_cate_1,how='left')
-train_x = train_x.join(OHE_cate_2,how='left')
-train_x = train_x.join(OHE_cate_3,how='left')
-#train_x['location_id'] = shop_info_num.location_id
-#train_x = train_x.join(OHE_score,how='left')
-train_x = train_x.join(OHE_shop_level,how='left')
+#train_x = train_x.join(OHE_city_name,how='left')
+#train_x = train_x.join(OHE_cate_1,how='left')
+#train_x = train_x.join(OHE_cate_2,how='left')
+#train_x = train_x.join(OHE_cate_3,how='left')
+##train_x['location_id'] = shop_info_num.location_id
+##train_x = train_x.join(OHE_score,how='left')
+#train_x = train_x.join(OHE_shop_level,how='left')
 train_x = train_x.join(train_x_view)
 train_x['std'] = train_std
 train_x['max'] = train_max
@@ -116,14 +109,12 @@ train_x['var'] = train_var
 
 train_x = train_x.join(week_poly_2(weekA,'poly2A'),how='left')
 train_x = train_x.join(week_poly_2(weekB,'poly2B'),how='left')
-train_x = train_x.join(add_July_Aug,how='left')
-train_x = train_x.join(analysis_all_week,how='left')
-train_x = train_x.join(point_feature.ix[:,'2016-10-18':'2016-10-24'],how='left')
+
 
 train_y = weekC.drop('shop_id',axis=1)
 
-train_x.to_csv('../train_1/train_x'+day_time+'.csv',index=False)
-train_y.to_csv('../train_1/train_y'+day_time+'.csv',index=False)
+train_x.to_csv('../train_knn_1/train_x'+day_time+'.csv',index=False)
+train_y.to_csv('../train_knn_1/train_y'+day_time+'.csv',index=False)
 #-----------------------------------------------------------------------------------------------------------------------------------------------------
 test_x = (pd.merge(weekB,weekC,on='shop_id')).drop('shop_id',axis=1)    #test = weekC + weekD
 test_x_view = (pd.merge(weekB_view,weekC_view,on='shop_id')).drop('shop_id',axis=1)   
@@ -145,13 +136,13 @@ test_x['sumABCD'] = test_sum
 test_x['meanABCD'] = test_mean
 test_x['ratio_wk'] = test_ratio_wk
 test_x['open_ratio_ABCD'] = test_open_ratio.open_ratio
-test_x = test_x.join(OHE_city_name,how='left')
-test_x = test_x.join(OHE_cate_1,how='left')
-test_x = test_x.join(OHE_cate_2,how='left')
-test_x = test_x.join(OHE_cate_3,how='left')
-#test_x['location_id'] = shop_info_num.location_id
-#test_x = test_x.join(OHE_score,how='left')
-test_x = test_x.join(OHE_shop_level,how='left')
+#test_x = test_x.join(OHE_city_name,how='left')
+#test_x = test_x.join(OHE_cate_1,how='left')
+#test_x = test_x.join(OHE_cate_2,how='left')
+#test_x = test_x.join(OHE_cate_3,how='left')
+##test_x['location_id'] = shop_info_num.location_id
+##test_x = test_x.join(OHE_score,how='left')
+#test_x = test_x.join(OHE_shop_level,how='left')
 test_x = test_x.join(test_x_view)
 #test_x = test_x.join(poly_weekB)
 test_x['std'] = test_std
@@ -163,12 +154,10 @@ test_x['var'] = test_var
 
 test_x = test_x.join(week_poly_2(weekB,'poly2B'),how='left')
 test_x = test_x.join(week_poly_2(weekC,'poly2C'),how='left')
-test_x = test_x.join(add_July_Aug,how='left')
-test_x = test_x.join(analysis_all_week,how='left')
-test_x = test_x.join(point_feature.ix[:,'2016-10-25':'2016-10-31'])
+
+
 
 test_y = weekD.drop('shop_id',axis=1)
 
-test_x.to_csv('../test_1/test_x'+day_time+'.csv',index=False)
-test_y.to_csv('../test_1/test_y'+day_time+'.csv',index=False)
-
+test_x.to_csv('../test_knn_1/test_x'+day_time+'.csv',index=False)
+test_y.to_csv('../test_knn_1/test_y'+day_time+'.csv',index=False)

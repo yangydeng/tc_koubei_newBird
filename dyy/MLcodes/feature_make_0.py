@@ -11,12 +11,18 @@ from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import *
 
-day_time = '_02_16_3'
+day_time = '_03_01_3'
+
+open_ABCD_ID = every_shop_open_ratio(0.85,447)
+open_ABCD_ID = open_ABCD_ID.shop_id.values
 
 weekA = pd.read_csv('../csv/weekABCD/weekA.csv'); weekA.index=weekA.shop_id
 weekB = pd.read_csv('../csv/weekABCD/weekB.csv'); weekB.index=weekB.shop_id
 weekC = pd.read_csv('../csv/weekABCD/weekC.csv'); weekC.index=weekC.shop_id
 weekD = pd.read_csv('../csv/weekABCD/weekD.csv'); weekD.index=weekD.shop_id
+add_July_Aug = pd.read_csv('../csv/add_July_Aug.csv')
+analysis_all_week = pd.read_csv('../csv/analysis_all_week.csv')
+point_feature = pd.read_csv('../csv/point_feature.csv')  #天气
 
 
 weekA_view = pd.read_csv('../csv/weekABCD/weekA_view.csv'); weekA_view.index = weekA_view.shop_id
@@ -26,7 +32,7 @@ weekD_view = pd.read_csv('../csv/weekABCD/weekD_view.csv'); weekD_view.index = w
 shop_info_num = pd.read_csv('../csv/shop_info_num.csv')
 
 '''  poly   degree=2     '''
-poly = PolynomialFeatures(2,interaction_only=True,include_bias=False)
+poly = PolynomialFeatures(1,interaction_only=True,include_bias=False)
 train_x = pd.merge(weekA,weekB,on='shop_id')                                       #train = weekA+ weekB + weekC
 train_x = (pd.merge(train_x,weekC,on='shop_id')).drop('shop_id',axis=1)
 train_x_view = pd.merge(weekA_view,weekB_view,on='shop_id')
@@ -88,7 +94,7 @@ OHE_score = transfrom_Arr_DF(make_OHE(shop_info_num.score),'shop_info_score_')
 #   make shop_info.shop_level 的OHE码
 OHE_shop_level = transfrom_Arr_DF(make_OHE(shop_info_num.shop_level),'shop_info_level_')
 
-train_x = transfrom_Arr_DF(poly.fit_transform(train_x))
+#train_x = transfrom_Arr_DF(poly.fit_transform(train_x))
 train_x['sumABCD'] = train_sum
 train_x['open_ratio'] = train_open_ratio
 train_x['ratio_wk'] = train_ratio_wk
@@ -108,7 +114,20 @@ train_x['median'] = train_median
 train_x['mad'] = train_mad
 train_x['var'] = train_var
 
+#train_x = train_x.join(week_poly_2(weekA,'poly2A'),how='left')
+#train_x = train_x.join(week_poly_2(weekB,'poly2B'),how='left')
+#train_x = train_x.join(week_poly_2(weekC,'poly2C'),how='left')
+train_x = train_x.join(add_July_Aug,how='left')
+train_x = train_x.join(analysis_all_week,how='left')
+train_x = train_x.join(point_feature.ix[:,'2016-10-25':'2016-10-31'],how='left')
+
 train_y = weekD.drop('shop_id',axis=1)
+
+#筛选 shop_id
+train_x.index= [i for i in range(1,2001)]
+test_x.index= [i for i in range(1,2001)]
+train_x = train_x.ix[open_ABCD_ID]
+train_y = train_y.ix[open_ABCD_ID]
 
 train_x.to_csv('../train_0/train_x'+day_time+'.csv',index=False)
 train_y.to_csv('../train_0/train_y'+day_time+'.csv',index=False)
@@ -130,7 +149,7 @@ test_median = test_x.median(axis=1)
 test_mad = test_x.mad(axis=1)
 test_var = test_x.var(axis=1)
 
-test_x = transfrom_Arr_DF(poly.fit_transform(test_x))
+#test_x = transfrom_Arr_DF(poly.fit_transform(test_x))
 test_x['sumABCD'] = test_sum
 test_x['open_ratio'] = test_open_ratio.open_ratio
 test_x['ratio_wk'] = test_ratio_wk
@@ -139,7 +158,7 @@ test_x = test_x.join(OHE_city_name,how='left')
 test_x = test_x.join(OHE_cate_1,how='left')
 test_x = test_x.join(OHE_cate_2,how='left')
 test_x = test_x.join(OHE_cate_3,how='left')
-#test_x['location_id'] = shop_info_num.location_id
+#test_x['location_id'] = shop_info_num.day_time = '_02_26_2_p1'location_id
 #test_x = test_x.join(OHE_score,how='left')
 test_x = test_x.join(OHE_shop_level,how='left')
 test_x = test_x.join(test_x_view)
@@ -149,6 +168,13 @@ test_x['min'] = test_min
 test_x['median'] = test_median
 test_x['mad'] = test_mad
 test_x['var'] = test_var
+
+#test_x = test_x.join(week_poly_2(weekB,'poly2B'),how='left')
+#test_x = test_x.join(week_poly_2(weekC,'poly2C'),how='left')
+#test_x = test_x.join(week_poly_2(weekD,'poly2D'),how='left')
+test_x = test_x.join(add_July_Aug,how='left')
+test_x = test_x.join(analysis_all_week,how='left')
+test_x = test_x.join(point_feature.ix[:,'2016-11-08':'2016-11-14'])
 
 test_x.to_csv('../test_0/test_x'+day_time+'.csv',index=False)
 
