@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 17 14:22:54 2017
-
-@author: Administrator
+    
+    交叉验证 + GridSearch调参，calculate_score 按照主办方给出的方式计算得分。    
+    
+@author: yangydeng
 """
 
 import pandas as pd

@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 10 10:18:06 2017
-
-@author: Administrator
+    MLcode1对应的训练特征
+@author: yangydeng
 """
 
 import pandas as pd
@@ -11,7 +11,7 @@ from sklearn.preprocessing import PolynomialFeatures
 sys.path.append('../tools')
 from tools import every_shop_open_ratio,transfrom_Arr_DF,make_OHE,week_poly_2
 
-day_time = '_02_27_2'
+day_time = '_03_07_2'
 add_weekends = pd.read_csv('../csv/add_weekends.csv')
 add_Aug = pd.read_csv('../csv/add_Aug.csv')
 add_2016 = pd.read_csv('../csv/add_2016.csv')

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Feb 22 16:20:20 2017
-
+    提供给MLcode_knn的训练特征
 @author: Administrator
 """
 import pandas as pd

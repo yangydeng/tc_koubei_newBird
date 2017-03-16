@@ -2,7 +2,9 @@
 """
 Created on Wed Feb 22 15:03:58 2017
 
-@author: Administrator
+            knn+bagging
+
+@author: yangydeng
 """
 
 day_time = '_02_22_3'

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Wed Mar 01 20:14:51 2017
-
+    利用2015年的数据预测2016，预测的是增长率。
 @author: Administrator
 """
 
@@ -91,7 +91,7 @@ test_x = test_x.fillna(1)
 
 train_y = DataFrame(train_y)
 
-#----------------------------------------------------------------------------------------
+#----------------------------------------------------------------------------------------直接生成激进结果
 ET = ExtraTreesRegressor(n_estimators=2600,random_state=1,n_jobs=-1,min_samples_split=2,min_samples_leaf=2,max_depth=12,max_features='sqrt')
 ET.fit(train_x,train_y)
 pre = ET.predict(test_x)

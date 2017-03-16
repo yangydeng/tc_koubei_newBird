@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 17 10:22:20 2017
-
+    MLcode2对应的训练特征
 @author: Administrator
 """
 

@@ -2,7 +2,9 @@
 """
 Created on Thu Feb 09 10:21:49 2017
 
-@author: Administrator
+    产生提交用的result
+
+@author: yangydeng
 """
 
 import pandas as pd

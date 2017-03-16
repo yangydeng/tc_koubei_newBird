@@ -2,7 +2,9 @@
 """
 Created on Fri Feb 17 14:14:14 2017
 
-@author: Administrator
+    通过2015年预测2016年    
+    
+@author: yangydeng
 """
 
 import pandas as pd

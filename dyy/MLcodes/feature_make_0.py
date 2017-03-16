@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 Created on Fri Feb 10 12:40:05 2017
-
+    制造MLcode_0对应的训练特征
 @author: Administrator
 """
 

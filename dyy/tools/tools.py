@@ -2,7 +2,7 @@
 # encoding = utf-8
 """
 Created on Thu Jan 26 19:28:32 2017
-
+    工具函数
 @author: 邓旸旸
 """
 import numpy as np
@@ -38,7 +38,7 @@ def gb2312(col):
         col_return.append(row.encode('gb2312'))
     
     return col_return
-    
+
     
     
 '''本模块用于将cursor获取得到的整张表转变为list的形式，以便生成DataFrame'''
@@ -101,13 +101,13 @@ def calculate_score(pre,real):
 
 '''链接数据库，注意有两个返回值'''
 def conn_MySQL():
-    db = MySQLdb.connect(host="localhost",user='root',passwd="Dyy2008723",db="tc_koubei",charset="utf8")
+    db = MySQLdb.connect(host="localhost",user='root',passwd="******",db="tc_koubei",charset="utf8")
     cursor = db.cursor()
     return cursor,db
     
 '''gbk的字符形式链接MySQL，因为utf8的连接方式不能查询中文字符'''
 def conn_MySQL_gbk():
-    db = MySQLdb.connect(host="localhost",user='root',passwd="Dyy2008723",db="tc_koubei",charset="gbk")
+    db = MySQLdb.connect(host="localhost",user='root',passwd="******",db="tc_koubei",charset="gbk")
     cursor = db.cursor()
     return cursor,db
 
@@ -619,6 +619,9 @@ def get_open_16():
 def combine_two_results(labels = [False for i in range(2000)]):
     res1,res2 = read_two_results()
     
+    res1_Wed_1 = res1.Wed_1.values
+    res2_Wed_1 = res2.Wed_1.values     
+    
     res1_Sat_1 = res1.Sat_1.values    
     res2_Sat_1 = res2.Sat_1.values
 
@@ -649,7 +652,8 @@ def combine_two_results(labels = [False for i in range(2000)]):
     for i in open_15:  #open_15/6 是 商家的id,从1开始   
     
         #数组的index从0开始，因此要-1             
-  
+        if(res1_Wed_1[i-1] < res2_Wed_1[i-1]):
+            res1_Wed_1[i-1] = res2_Wed_1[i-1]
     
         if(res1_Wed_2[i-1] < res2_Wed_2[i-1]):# and (labels[i] or res2_Wed_2[i]<200) ):
             res1_Wed_2[i-1] = res2_Wed_2[i-1]
@@ -658,7 +662,7 @@ def combine_two_results(labels = [False for i in range(2000)]):
             res1_Fri_2[i-1] = res2_Fri_2[i-1]
             
 
-                    
+    res1.Wed_1 = res1_Wed_1                    
 #    res1.Sat_1 = res1_Sat_1
 #    res1.Sun_1 = res1_Sun_1
     res1.Wed_2 = res1_Wed_2      
